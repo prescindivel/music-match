@@ -1,7 +1,8 @@
+/*jslint node: true */
+"use strict";
+
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 3000;
-var path = require('path');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
@@ -60,6 +61,7 @@ if (app.get('env') === 'development') {
 
 // START THE SERVER
 // ==============================================
+var port = process.env.PORT || 3000;
 app.listen(port);
 console.log('Magic happens on port ' + port);
 

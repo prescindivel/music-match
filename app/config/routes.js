@@ -1,8 +1,11 @@
+/*jslint node: true */
+"use strict";
+
 var express = require('express');
 var router = express.Router();
 var user = require('../models/user');
 
-router.get('/', function (res, req, next) {
+router.get('/', function (res, req) {
   req.json({message: 'welcome'});
   console.log(req.params);
 });
@@ -17,7 +20,7 @@ router.route("/users")
       response = {"error" : false,"message" : data};
     }
     res.json(response);
-  })
+  });
 })
 .post(function(req, res){
   var newUser = user();
@@ -36,7 +39,7 @@ router.route("/users")
       response = {"error" : false, "message" : "Data added"};
     }
     res.json(response);
-  })
+  });
 });
 
 router.route("/users/:id")
