@@ -19,7 +19,6 @@ mongoose.connect(db.url);
 // ==============================================
 app.set('json spaces', 2);
 app.set('view engine', 'jade');
-app.use(express.static(path.join(__dirname + 'public')));
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -35,11 +34,9 @@ app.use(flash());
 
 // ROUTES
 // ==============================================
-var index = require('./app/routes/index');
-
+var routes = require('./app/config/routes');
 // root
-app.use('/', index);
-
+app.use('/', routes);
 
 // 404
 app.use(function(req, res, next) {
