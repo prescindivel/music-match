@@ -3,16 +3,17 @@
 
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
 var user = require('../models/user');
+
+var response = {};
 
 router.get('/', function (res, req) {
   req.json({message: 'welcome'});
   console.log(req.params);
 });
 
-router.route("/users")
-.get(function(req,res){
-  var response = {};
+router.get('/users', function (req,res) {
   user.find({},function(err,data){
     if(err) {
       response = {"error" : true, "message" : "Error fetching data"};
@@ -21,21 +22,23 @@ router.route("/users")
     }
     res.json(response);
   });
-})
-.post(function(req, res){
-  var newUser = user();
-  var response = {};
+});
 
-  newUser.email = req.body.email;
-  newUser.password = req.body.password;
+router.post('/register', function(req, res, next){
 
-  newUser.save(function(err) {
+  user.register(new user({ username: req.body.username }, {password: req.body.password}), function(err, account) {
     if (err) {
-      response = {"error" : true, "message" : "Error adding data"};
-    } else {
-      response = {"error" : false, "message" : "Data added"};
+      res.json({ error : err });
     }
-    res.json(response);
+
+    passport.authenticate('local'),(function (req, res){
+      req.session.save(function (err) {
+        if (err && res.statusCode == 200) {
+          console.log(err);
+        }
+        res.redirect('/users');
+      });
+    });
   });
 });
 

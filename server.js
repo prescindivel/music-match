@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var passport = require('passport');
+var localStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 
 var morgan = require('morgan');
@@ -33,6 +34,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+
+var user = require('./app/models/user');
+passport.use(new localStrategy(user.authenticate()));
+passport.serializeUser(user.serializeUser());
+passport.deserializeUser(user.deserializeUser());
 // ROUTES
 // ==============================================
 var routes = require('./app/config/routes');

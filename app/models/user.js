@@ -3,12 +3,13 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt');
-var SALT_WORK_FACTOR = 10;
+var passportLocalMongoose = require('passport-local-mongoose');
+// var bcrypt = require('bcrypt');
+// var SALT_WORK_FACTOR = 10;
 
 
 var userSchema = new Schema({
-  email: {
+  username: {
     type: String,
     required: true,
     unique: true,
@@ -19,27 +20,29 @@ var userSchema = new Schema({
   },
 });
 
-userSchema.pre('save', function(next) {
-  var user = this;
+userSchema.plugin(passportLocalMongoose);
 
-  if (!user.isModified('password')) return next();
-  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
-    if (err) return next(err);
-    bcrypt.hash(user.password, salt, function(err, hash){
-      if (err) return next();
+// userSchema.pre('save', function(next) {
+//   var user = this;
 
-      user.password = hash;
-      next();
-    });
-  });
-});
+//   if (!user.isModified('password')) return next();
+//   bcrypt.genSalt(10, function(err, salt) {
+//     if (err) return next(err);
+//     bcrypt.hash(user.password, salt, function(err, hash){
+//       if (err) return next();
+
+//       user.password = hash;
+//       next();
+//     });
+//   });
+// });
 
 
-userSchema.methods.comparePassword = function(attemptedPassword, callback) {
-  bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
-    if (err) return callback(err);
-    callback(null, isMatch);
-  });
-};
+// userSchema.methods.comparePassword = function(attemptedPassword, callback) {
+//   bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
+//     if (err) return callback(err);
+//     callback(null, isMatch);
+//   });
+// };
 
 module.exports = mongoose.model('userSchema', userSchema);
