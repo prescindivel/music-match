@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride());
 
 
-app.use(session({ secret: 'nyan cat', saveUninitialized: true,  resave: true }));
+app.use(session({ secret: 'nyan cat', saveUninitialized: true,  resave: false, cookie: { secure: true }}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

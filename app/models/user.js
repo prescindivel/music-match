@@ -3,16 +3,15 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
 
 
 var userSchema = new Schema({
   email: {
     type: String,
-    index: {
-      unique: true,
-      dropDups: true
-    }
+    required: true,
+    unique: true,
   },
   password: {
     type: String,
@@ -20,12 +19,27 @@ var userSchema = new Schema({
   },
 });
 
-userSchema.methods.generateHash = function(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
+userSchema.pre('save', function(next) {
+  var user = this;
 
-userSchema.methods.validPassword = function(password) {
-  return bcrypt.compareSync(password, this.password);
+  if (!user.isModified('password')) return next();
+  bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+    if (err) return next(err);
+    bcrypt.hash(user.password, salt, function(err, hash){
+      if (err) return next();
+
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+
+userSchema.methods.comparePassword = function(attemptedPassword, callback) {
+  bcrypt.compare(attemptedPassword, this.password, function(err, isMatch) {
+    if (err) return callback(err);
+    callback(null, isMatch);
+  });
 };
 
 module.exports = mongoose.model('userSchema', userSchema);

@@ -15,9 +15,9 @@ router.route("/users")
   var response = {};
   user.find({},function(err,data){
     if(err) {
-      response = {"error" : true,"message" : "Error fetching data"};
+      response = {"error" : true, "message" : "Error fetching data"};
     } else {
-      response = {"error" : false,"message" : data};
+      response = {"error" : false, "users" : data};
     }
     res.json(response);
   });
@@ -27,10 +27,7 @@ router.route("/users")
   var response = {};
 
   newUser.email = req.body.email;
-  newUser.password = require('crypto')
-                          .createHash('sha1')
-                          .update(req.body.password)
-                          .digest('base64');
+  newUser.password = req.body.password;
 
   newUser.save(function(err) {
     if (err) {
@@ -47,9 +44,9 @@ router.route("/users/:id")
   var response = {};
   user.findById(req.params.id,function(err,data){
     if(err) {
-      response = {"error" : true,"message" : "Error fetching data"};
+      response = {"error" : true, "message" : "Error fetching data"};
     } else {
-      response = {"error" : false,"message" : data};
+      response = {"error" : false, "user" : data};
     }
     res.json(response);
   });
