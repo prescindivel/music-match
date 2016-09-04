@@ -1,6 +1,12 @@
 {
-  "name": "node-api",
+  "name": "facebook-login",
+  "version": "1.0.0",
   "main": "server.js",
+  "scripts": {
+    "start" : "node server.js"
+  },
+  "author": "jane-doe",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^0.8.7",
     "body-parser": "~1.0.1",
@@ -16,5 +22,8 @@
     "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0"
+  },
+  "engines": {
+    "node": "6.2.2"
   }
 }

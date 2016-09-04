@@ -2,5 +2,5 @@
 "use strict";
 
 module.exports = {
-  'url' : 'mongodb://localhost/auth'
+  'url' : 'mongodb://localhost/facebook-login'
 };

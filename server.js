@@ -1,21 +1,22 @@
 /*jslint node: true */
 "use strict";
 
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
-var passport = require('passport');
-var localStrategy = require('passport-local').Strategy;
-var flash = require('connect-flash');
+var express        = require('express');
+var app            = express();
+var mongoose       = require('mongoose');
+var passport       = require('passport');
+var flash          = require('connect-flash');
 
-var morgan = require('morgan');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+var morgan         = require('morgan');
+var bodyParser     = require('body-parser');
+var cookieParser   = require('cookie-parser');
 var methodOverride = require('method-override');
-var session = require('express-session');
+var session        = require('express-session');
 
-var db = require('./app/config/db');
+var db             = require('./app/config/db');
 mongoose.connect(db.url);
+
+require('./app/config/passport')(passport);
 
 // CONFIG app
 // ==============================================
@@ -28,35 +29,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride());
 
-
 app.use(session({ secret: 'nyan cat', saveUninitialized: true,  resave: false, cookie: { secure: true }}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-
-var user = require('./app/models/user');
-passport.use(new localStrategy(user.authenticate()));
-passport.serializeUser(user.serializeUser());
-passport.deserializeUser(user.deserializeUser());
 // ROUTES
 // ==============================================
-var routes = require('./app/config/routes');
+var routes = require('./app/routes')(passport);
 // root
 app.use('/', routes);
-
 // 404
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
-
-
 // ERROR handler
 // ==============================================
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.json({
       message: err.message,
