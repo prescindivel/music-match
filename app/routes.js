@@ -10,7 +10,12 @@ module.exports = function (passport) {
   });
 
   router.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
-  router.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/error' }));
+  router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+      successRedirect: '/',
+      failureRedirect: '/error'
+    })
+  );
 
   return router;
 };
